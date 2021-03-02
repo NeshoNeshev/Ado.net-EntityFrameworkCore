@@ -16,7 +16,7 @@ namespace P01_StudentSystem.Data
         }
 
         public DbSet<Course> Courses { get; set; }
-        public DbSet<Homework> Homeworks { get; set; }
+        public DbSet<Homework> HomeworkSubmissions { get; set; }
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<StudentCourse> StudentCourses { get; set; }
@@ -36,6 +36,18 @@ namespace P01_StudentSystem.Data
             modelBuilder.Entity<StudentCourse>(x =>
             {
                 x.HasKey(x => new {x.StudentId, x.CourseId});
+            });
+             modelBuilder.Entity<Homework>(x =>
+            {
+                x.HasOne(h => h.Student)
+                    .WithMany(s => s.HomeworkSubmissions)
+                    .HasForeignKey(h => h.StudentId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                x.HasOne(h => h.Course)
+                    .WithMany(c => c.HomeworkSubmissions)
+                    .HasForeignKey(h => h.CourseId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }
